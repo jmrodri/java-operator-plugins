@@ -46,8 +46,9 @@ type initSubcommand struct {
 	commandName string
 
 	// Flags
-	group       string
-	domain      string
+	group string
+	// defined by kustomize plugin
+	// domain      string
 	version     string
 	kind        string
 	projectName string
@@ -71,8 +72,8 @@ func (p *initSubcommand) BindFlags(fs *pflag.FlagSet) {
 	//// TODO: include flags required for this plugin
 
 	fs.SortFlags = false
-	fs.StringVar(&p.domain, "domain", "my.domain", "domain for groups")
-	fs.StringVar(&p.projectName, "project-name", "", "name of this project, the default being directory name")
+	// fs.StringVar(&p.domain, "domain", "my.domain", "domain for groups")
+	// fs.StringVar(&p.projectName, "project-name", "", "name of this project, the default being directory name")
 
 	fs.StringVar(&p.group, groupFlag, "", "resource Group")
 	fs.StringVar(&p.version, versionFlag, "", "resource Version")
@@ -82,10 +83,12 @@ func (p *initSubcommand) BindFlags(fs *pflag.FlagSet) {
 
 func (p *initSubcommand) InjectConfig(c config.Config) error {
 	p.config = c
+	p.projectName = p.config.GetProjectName()
 
-	if err := p.config.SetDomain(p.domain); err != nil {
-		return err
-	}
+	// TODO: not sure what we'll have to do here
+	// if err := p.config.SetDomain(p.domain); err != nil {
+	//     return err
+	// }
 
 	// Assign a default project name
 	if p.projectName == "" {
